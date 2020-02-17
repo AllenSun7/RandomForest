@@ -51,6 +51,8 @@ def random_forest_tree():
     # Calculate roc auc
     roc_value = roc_auc_score(y_test, rf_probs)
     print(f'Model ROC Accuracy: {roc_value}')
+    print(metrics.classification_report(rf_predictions, y_test))
+    print(rf_predictions)
 
 
 def main():
