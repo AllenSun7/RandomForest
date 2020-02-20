@@ -6,6 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn import metrics
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import GridSearchCV
 
 
 def random_forest_tree():
@@ -23,20 +24,31 @@ def random_forest_tree():
     #keep the consistency and the same scaling
     X_test = sc.transform(X_test)
 
-    #train the alforithm
-    classifier = RandomForestClassifier(n_estimators=200, 
-                                bootstrap = True,
-                                random_state=0)
+    parameters = {'n_estimators': [200, 250, 300, 300, 350, 400, 500, 600, 700, 800 ,900, 1000], 
+    }
+
+    #train the algorithm
+    classifier = RandomForestClassifier(bootstrap = True, random_state=0)
+    scorer = metrics.make_scorer(metrics.fbeta_score, beta=0.5)
+    grid_obj = GridSearchCV(classifier, parameters, scoring=scorer)
+    grid_fit = grid_obj.fit(X_train, y_train)
+
+    # Get the estimator
+    best_clf = grid_fit.best_estimator_
+    best_predictions = best_clf.predict(X_test)
+
     classifier.fit(X_train, y_train)
-    y_pred = classifier.predict(X_test)
-    rf_prob = classifier.predict_proba(X_test)[:, 1]
-    y_accuracy = roc_auc_score(y_test, rf_prob)
+    rf_prob = best_clf.predict_proba(X_test)[:, 1]
+    best_accuracy = roc_auc_score(y_test, rf_prob)
+    f1 = metrics.f1_score(y_test, best_predictions)
 
     #evaluate the algorithm
-    print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, y_pred))
-    print('Mean Squared Error:', metrics.mean_squared_error(y_test, y_pred))
-    print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, y_pred)))
-    print(f'Model ROC Accuracy: {y_accuracy}')
+    print('Mean Absolute Error:', metrics.mean_absolute_error(y_test, best_predictions))
+    print('Mean Squared Error:', metrics.mean_squared_error(y_test, best_predictions))
+    print('Root Mean Squared Error:', np.sqrt(metrics.mean_squared_error(y_test, best_predictions)))
+    print(f'Model ROC Accuracy: {best_accuracy}')
+    print('F score is:',f1)
+    print("best_clf.get_params", best_clf.get_params)
 
  
     # Create the model with 100 trees
@@ -52,7 +64,7 @@ def random_forest_tree():
     roc_value = roc_auc_score(y_test, rf_probs)
     print(f'Model ROC Accuracy: {roc_value}')
     print(metrics.classification_report(rf_predictions, y_test))
-    print(rf_predictions)
+    print("model.get_params", model.get_params)
 
 
 def main():

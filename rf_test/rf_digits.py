@@ -42,7 +42,7 @@ def random_forest():
     y_pred = model.predict(X_test)
     print(metrics.classification_report(y_pred, y_test))
 
-    #plit confusion tree
+    #plot confusion tree
     mat = confusion_matrix(y_test, y_pred)
     sns.heatmap(mat.T, square=True, annot=True, fmt='d', cbar=False)
     plt.xlabel('true label')

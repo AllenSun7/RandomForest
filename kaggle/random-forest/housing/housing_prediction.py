@@ -60,7 +60,7 @@ def random_forest():
     # Calculate roc auc
 
     print("Validation MAE for Random Forest Model: {}".format(rf_val_mae))
-    print("best_model.get_params", best_model.get_params)
+    print("best_model.get_params", grid_fit.best_params_)
     end = timeit.timeit()
     print("grid time: %f"% (end-start))
 
