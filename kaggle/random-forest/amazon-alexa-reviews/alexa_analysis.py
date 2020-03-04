@@ -438,7 +438,7 @@ def rf_model(X_train, X_test, y_train, y_test):
 def model_tuning(X_train, X_test, y_train, y_test):
     clf = RandomForestClassifier()
     scorer = metrics.make_scorer(metrics.fbeta_score, beta=0.5)
-    """
+    
     parameters = {
                     'n_estimators': [150, 180, 250], #250
                     'max_features': [120, 150], #150
@@ -454,7 +454,8 @@ def model_tuning(X_train, X_test, y_train, y_test):
                     'min_samples_split':[3], #3
                     'min_samples_leaf':[1] #1
                     }
-
+    """
+    
     grid_obj = GridSearchCV(clf, parameters, scoring=scorer)
     grid_fit = grid_obj.fit(X_train, y_train)
     # Get the estimator
